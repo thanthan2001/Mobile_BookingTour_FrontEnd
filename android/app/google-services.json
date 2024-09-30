@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "238232401451",
+    "project_id": "bookingtourproject",
+    "storage_bucket": "bookingtourproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238232401451:android:f4fe13cd58d8386ea25c6e",
+        "android_client_info": {
+          "package_name": "com.example.reading_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtO_t4-ipIfAW7ixlcD6IJs366h9TyUc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

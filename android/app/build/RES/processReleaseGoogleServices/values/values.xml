@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">495230682457</string>
+    <string name="google_api_key" translatable="false">AIzaSyCMZRWR0keh5qIG9b9av0Hp0t_TI4yQDlY</string>
+    <string name="google_app_id" translatable="false">1:495230682457:android:c9110af6ddedc19aee7848</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCMZRWR0keh5qIG9b9av0Hp0t_TI4yQDlY</string>
+    <string name="google_storage_bucket" translatable="false">reading-app-cd326.appspot.com</string>
+    <string name="project_id" translatable="false">reading-app-cd326</string>
+</resources>
