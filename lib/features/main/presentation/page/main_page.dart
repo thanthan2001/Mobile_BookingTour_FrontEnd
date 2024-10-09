@@ -16,7 +16,7 @@ class MainPage extends GetView<MainController> {
             initialRoute: "/home",
             onGenerateRoute: controller.onGenerateRoute,
           ),
-           const CustomNavbar(),
+          const CustomNavbar(),
         ],
       ),
     );

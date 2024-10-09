@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:reading_app/features/auth/user/domain/use_case/get_user_use_case.dart';
 
 class ApiService {
   final Dio _dio = Dio();
@@ -33,10 +34,25 @@ class ApiService {
       String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(endpoint, data: data);
+      print(response);
       return response.data;
     } on DioError catch (e) {
       print('DioError: ${e.message}');
       throw Exception('Failed to post data: ${e.message}');
+    }
+  }
+
+  // Hàm postParam với query parameters
+  Future<Map<String, dynamic>> postParam(
+      String endpoint, Map<String, dynamic> params) async {
+    try {
+      final uri =
+          Uri.parse(baseUrl + endpoint).replace(queryParameters: params);
+      final response = await _dio.postUri(uri);
+      return response.data;
+    } on DioError catch (e) {
+      print('DioError: ${e.message}');
+      throw Exception('Failed to post data with params: ${e.message}');
     }
   }
 
@@ -52,6 +68,26 @@ class ApiService {
               as List<dynamic>; // Trả về danh sách dữ liệu nếu đúng kiểu
         } else {
           throw Exception('Unexpected data format');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } on DioError catch (e) {
+      print('DioError: ${e.message}');
+      throw Exception('Failed to get data: ${e.message}');
+    }
+  }
+
+  Future<Map<String, dynamic>> getDataJSON(String endpoint) async {
+    try {
+      final response = await _dio.get(endpoint);
+
+      if (response.statusCode == 200) {
+        if (response.data is Map<String, dynamic>) {
+          // Trả về đối tượng Map nếu dữ liệu là một JSON object
+          return response.data as Map<String, dynamic>;
+        } else {
+          throw Exception('Unexpected data format: Expected a JSON object');
         }
       } else {
         throw Exception('Failed to load data: ${response.statusCode}');
@@ -91,6 +127,26 @@ class ApiService {
     } on DioError catch (e) {
       print('DioError: ${e.message}');
       throw Exception('Failed to patch data: ${e.message}');
+    }
+  }
+
+  // Hàm getDataFromUrl để gọi API từ URL đầy đủ
+  Future<Map<String, dynamic>> getDataFromUrl(String fullUrl) async {
+    try {
+      final response = await _dio.get(fullUrl);
+
+      if (response.statusCode == 200) {
+        if (response.data is Map<String, dynamic>) {
+          return response.data as Map<String, dynamic>;
+        } else {
+          throw Exception('Unexpected data format: Expected a JSON object');
+        }
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } on DioError catch (e) {
+      print('DioError: ${e.message}');
+      throw Exception('Failed to get data from URL: ${e.message}');
     }
   }
 }

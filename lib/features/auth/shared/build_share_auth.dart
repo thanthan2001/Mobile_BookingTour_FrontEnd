@@ -31,7 +31,7 @@ class BuildShareAuth {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Image.asset(
-              'assets/logo/logo3.png',
+              'assets/logo/logo4.png',
               width: 200,
               height: 200,
             ),

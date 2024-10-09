@@ -50,4 +50,30 @@ class GetuserUseCase {
       return null;
     }
   }
+
+  // Hàm giải mã AccessToken để lấy thông tin user
+  Map<String, dynamic>? decodeAccessToken(String accessToken) {
+    try {
+      // Tách token thành 3 phần: header, payload, signature
+      final parts = accessToken.split('.');
+      if (parts.length != 3) {
+        throw Exception('Invalid Access Token');
+      }
+
+      // Phần payload là phần thứ hai, được encode bằng Base64URL
+      final payload = parts[1];
+
+      // Giải mã payload từ Base64URL
+      final normalized = base64Url.normalize(payload);
+      final decodedPayload = utf8.decode(base64Url.decode(normalized));
+
+      // Chuyển payload từ JSON thành Map
+      final payloadMap = jsonDecode(decodedPayload) as Map<String, dynamic>;
+
+      return payloadMap;
+    } catch (e) {
+      print('Failed to decode access token: $e');
+      return null;
+    }
+  }
 }

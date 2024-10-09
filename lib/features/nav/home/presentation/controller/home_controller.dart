@@ -81,16 +81,15 @@ class HomeController extends GetxController {
 
       // Gọi API để lấy danh sách tour
       final response = await apiService.getData(endpoint);
-      // print("Fetched tours: $response");
+      // print("Fetched tours: $response["IMAGES"]");
 
       // Giả sử response là một danh sách các tour, cập nhật danh sách destinations
       destinations = response.map<Map<String, dynamic>>((tour) {
         return tour;
       }).toList();
-      print("DESTINATION==============: $destinations");
       tours = response;
-      // print("tour: $tours");
-      update(); // Cập nhật UI
+      print(tours);
+      update();
     } catch (e) {
       print("Error fetching tours: $e");
       // Xử lý lỗi ở đây (ví dụ: thông báo cho người dùng)

@@ -5,4 +5,5 @@ class PrefsConstants {
   static const String rememberAccount = "rememberAccount";
   static const String favorite = "favorite";
   static const String userToken = "userToken";
+  static const String userID = "userID";
 }

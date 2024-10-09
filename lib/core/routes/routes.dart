@@ -9,5 +9,9 @@ abstract class Routes {
   static const forgotPassword = "/forgotPassword";
   static const profile = "/profile";
   static const detailTour = "/detail-tour";
-
+  static const cart = "/cart";
+  static const personalInfor = "/personal-info";
+  static const paymentVNPay = "/payment-vnpay";
+  static const statusPayment = "/status-payment";
+  static const inforPayment = "/info-payment";
 }

@@ -4,6 +4,6 @@ import 'package:reading_app/features/detail_tour/presentation/controller/detail_
 class DetailTourBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<DetailTourController>(() => DetailTourController());
+    Get.lazyPut<DetailTourController>(() => DetailTourController(Get.find()));
   }
 }

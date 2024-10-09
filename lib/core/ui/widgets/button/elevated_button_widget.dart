@@ -56,9 +56,10 @@ class ElevatedButtonWidget extends StatelessWidget {
           children: [
             icon.isNotEmpty
                 ? Image.asset(
+                    color: AppColors.white,
                     icon,
-                    height: 20.0,
-                    width: 20.0,
+                    height: 25.0,
+                    width: 25.0,
                   )
                 : const SizedBox.shrink(),
             text.isNotEmpty

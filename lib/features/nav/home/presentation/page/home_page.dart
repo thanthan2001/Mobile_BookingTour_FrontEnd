@@ -116,6 +116,11 @@ class HomePage extends GetView<HomeController> {
               // Carousel slider hiển thị các điểm đến phổ biến
               GetBuilder<HomeController>(
                 builder: (controller) {
+                  if (controller.destinations.isEmpty) {
+                    return Center(
+                      child: Text('Không có địa điểm phổ biến để hiển thị'),
+                    );
+                  }
                   return CarouselSlider.builder(
                     itemCount: controller.destinations.length,
                     itemBuilder: (context, index, realIndex) {
@@ -177,14 +182,22 @@ class HomePage extends GetView<HomeController> {
           ),
         ],
       ),
-      actions: const [
+      actions: [
+        IconButton(
+            onPressed: () {
+              Get.toNamed('/cart');
+            },
+            icon: Icon(
+              Icons.shopping_cart_outlined,
+              color: AppColors.primary,
+            )),
         Padding(
           padding: EdgeInsets.all(8.0),
           child: CircleAvatar(
             backgroundImage: NetworkImage(
                 "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"), // Thay thế bằng link avatar
           ),
-        )
+        ),
       ],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0), // Chiều cao của đường line
@@ -207,7 +220,7 @@ class HomePage extends GetView<HomeController> {
     return InkWell(
       onTap: () {
         // Chuyển hướng đến trang chi tiết Tour và truyền thông tin tour
-        print(tourData);
+        // print(tourData["CALENDAR_TOUR"]);
         Get.toNamed('/detail-tour', arguments: tourData);
       },
       child: Container(

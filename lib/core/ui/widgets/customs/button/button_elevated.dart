@@ -11,8 +11,7 @@ class ButtonElevated extends ElevatedButtonWidget {
       {super.key,
       required this.onTap,
       required this.iconChild,
-      required this.textChild
-      })
+      required this.textChild})
       : super(
             ontap: onTap,
             icon: iconChild,
@@ -22,6 +21,5 @@ class ButtonElevated extends ElevatedButtonWidget {
             textSize: AppDimens.iconsSize20,
             backgroundcolor: AppColors.light,
             textColor: AppColors.textNormal,
-            borderRadius: AppDimens.radius30
-            );
+            borderRadius: AppDimens.radius30);
 }

@@ -1,0 +1,25 @@
+{
+    "success": true,
+    "data": {
+        "USER_ID": "66ed4a45ee69c51c9f156920",
+        "LIST_TOURS": [
+            {
+                "TOUR_ID": "6701394a41045cfdd19afe1e",
+                "CALENDAR_TOUR_ID": "6701394a41045cfdd19afe1f",
+                "START_DATE": "2024-01-10T17:00:00.000Z",
+                "END_DATE": "2024-04-10T17:00:00.000Z",
+                "START_TIME": "08:00",
+                "SLOT": 3,
+                "_id": "6703a65228b8ed8dc36bb5be"
+            }
+        ],
+        "TOTAL_PRICE": 3600000,
+        "STATUS": "Pending",
+        "BOOKING_TYPE": "Online",
+        "CUSTOMER_PHONE": "917673618811",
+        "CUSTOMER_NAME": "ThanThan",
+        "CITIZEN_ID": "991777299919",
+        "_id": "6703a65228b8ed8dc36bb5bd",
+        "CREATE_AT": "2024-10-07T09:13:54.221Z"
+    }
+}
