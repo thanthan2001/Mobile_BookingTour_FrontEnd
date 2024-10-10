@@ -6,7 +6,7 @@ import 'package:reading_app/features/auth/user/domain/use_case/get_user_use_case
 class CartController extends GetxController {
   final GetuserUseCase _getuserUseCase;
   CartController(this._getuserUseCase);
-
+  var selectedTours = <Map<String, dynamic>>[].obs;
   @override
   void onInit() async {
     await fetchDataCart();
@@ -67,7 +67,31 @@ class CartController extends GetxController {
   void updateItemCheckStatus(int index, bool isChecked) {
     cartTour['LIST_TOUR_REF'][index]['isChecked'] = isChecked;
     cartTour.refresh(); // Cập nhật giao diện khi trạng thái thay đổi
-    _calculateTotal(); // Tính toán lại tổng tiền khi trạng thái thay đổi
+
+    // Thêm hoặc xóa tour khỏi selectedTours
+    if (isChecked) {
+      // Thêm tour vào mảng selectedTours
+      selectedTours.add({
+        "TOUR_ID": cartTour['LIST_TOUR_REF'][index]['TOUR_ID']['_id'],
+        "CALENDAR_TOUR_ID": cartTour['LIST_TOUR_REF'][index]
+            ['CALENDAR_TOUR_ID'],
+        "START_DATE": cartTour['LIST_TOUR_REF'][index]['START_DATE'],
+        "END_DATE": cartTour['LIST_TOUR_REF'][index]['END_DATE'],
+        "START_TIME": cartTour['LIST_TOUR_REF'][index]['START_TIME'],
+        "SLOT": cartTour['LIST_TOUR_REF'][index]['NUMBER_OF_PEOPLE'],
+        "TOTAL_PRICE_TOUR": cartTour['LIST_TOUR_REF'][index]
+            ['TOTAL_PRICE_TOUR'],
+      });
+      print("Selected Tours: $selectedTours");
+    } else {
+      // Xóa tour khỏi mảng selectedTours
+      selectedTours.removeWhere((tour) =>
+          tour['TOUR_ID'] ==
+          cartTour['LIST_TOUR_REF'][index]['TOUR_ID']['_id']);
+      print("Selected Tours: $selectedTours");
+    }
+
+    _calculateTotal(); // Tính toán lại tổng tiền
   }
 
 // Phương thức để tính tổng tiền của các tour đã chọn
@@ -76,10 +100,13 @@ class CartController extends GetxController {
     for (var item in cartTour['LIST_TOUR_REF']) {
       if (item['isChecked'] == true) {
         total += double.parse(item['TOUR_ID']['PRICE_PER_PERSON']) *
-            double.parse(
-                item["NUMBER_OF_PEOPLE"]); // Tính tổng giá cho các tour đã chọn
+            double.parse(item["NUMBER_OF_PEOPLE"]);
       }
     }
-    totalPrice.value = total; // Cập nhật tổng tiền
+    totalPrice.value = total;
+  }
+
+  Future<void> handlePaymentCart() async {
+    await Get.toNamed('/info-payment', arguments: selectedTours);
   }
 }

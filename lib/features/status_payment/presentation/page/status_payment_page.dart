@@ -5,12 +5,20 @@ import 'package:reading_app/core/ui/widgets/button/elevated_button_widget.dart';
 import 'package:reading_app/features/status_payment/presentation/controller/status_payment_controller.dart';
 
 class StatusPaymentPage extends GetView<StatusPaymentController> {
+  const StatusPaymentPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Trạng thái thanh toán'),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Get.offAllNamed('/main');
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -21,7 +29,7 @@ class StatusPaymentPage extends GetView<StatusPaymentController> {
             // Success icon
             const Icon(
               Icons.check_circle,
-              color: AppColors.primary,
+              color: AppColors.success,
               size: 100,
             ),
             const SizedBox(height: 20),
@@ -37,7 +45,7 @@ class StatusPaymentPage extends GetView<StatusPaymentController> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             // Additional details message
             Center(

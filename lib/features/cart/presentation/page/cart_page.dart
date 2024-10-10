@@ -111,8 +111,8 @@ class CartPage extends GetView<CartController> {
                   const SizedBox(height: 10),
                   ButtonNormal(
                     textChild: "Thanh toán",
-                    onTap: () {
-                      print("THANH TOÁN");
+                    onTap: () async {
+                      await controller.handlePaymentCart();
                     },
                   ),
                 ],

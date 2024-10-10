@@ -159,6 +159,7 @@ class DetailTourController extends GetxController {
       "NUMBER_OF_PEOPLE": numberOfPeople.value,
       "START_TIME": startTime.value.isNotEmpty ? startTime.value : 'N/A',
       "CALENDAR_TOUR_ID": calendarTour[selectedItem.value]['_id'],
+      "TOTAL_PRICE_TOUR": totalPrice.value,
     };
 
     try {
