@@ -12,6 +12,5 @@ class ButtonNormal extends ButtonWidget {
             ontap: onTap,
             padding: const EdgeInsets.all(AppDimens.paddingSpace15),
             fontWeight: FontWeight.w900,
-            textSize: AppDimens.iconsSize20
-            );
+            textSize: AppDimens.iconsSize20);
 }

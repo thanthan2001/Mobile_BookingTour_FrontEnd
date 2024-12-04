@@ -1,28 +1,22 @@
 class UserModel {
   final String uid;
   final String email;
-  final String? password;
+  final String? phoneNumber;
   String? displayName;
-  String? photoUrl;
-  String? createdAt;
 
   UserModel({
     required this.uid,
     required this.email,
-    this.password,
+    this.phoneNumber,
     this.displayName,
-    this.photoUrl,
-    this.createdAt,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       uid: json['uid'],
       email: json['email'],
-      password: json['password'],
+      phoneNumber: json['phoneNumber'],
       displayName: json['displayName'],
-      photoUrl: json['photoUrl'],
-      createdAt: json['createdAt'],
     );
   }
 
@@ -30,10 +24,8 @@ class UserModel {
     return {
       'uid': uid,
       'email': email,
-      'password': password,
+      'phoneNumber': phoneNumber,
       'displayName': displayName,
-      'photoUrl': photoUrl,
-      'createdAt': createdAt,
     };
   }
 }

@@ -11,14 +11,21 @@ class DatetimeUtil {
     return formattedDate;
   }
 
+  // static String formatCustom(DateTime? dateTime) {
+  //   if (dateTime != null) {
+  //     DateFormat formatter = DateFormat('dd/MM/yyyy');
+  //     return formatter.format(dateTime);
+  //   } else {
+  //     DateTime now = DateTime.now(); // Lấy thời gian hiện tại
+  //     DateFormat formatter = DateFormat('dd/MM/yyyy');
+  //     return formatter.format(now);
+  //   }
+  // }
   static String formatCustom(DateTime? dateTime) {
     if (dateTime != null) {
-      DateFormat formatter = DateFormat('dd/MM/yyyy');
-      return formatter.format(dateTime);
+      return DateFormat('dd/MM/yyyy').format(dateTime);
     } else {
-      DateTime now = DateTime.now(); // Lấy thời gian hiện tại
-      DateFormat formatter = DateFormat('dd/MM/yyyy');
-      return formatter.format(now);
+      return DateFormat('dd/MM/yyyy').format(DateTime.now());
     }
   }
 }

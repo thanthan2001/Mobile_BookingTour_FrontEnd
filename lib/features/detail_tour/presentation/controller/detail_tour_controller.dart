@@ -10,6 +10,7 @@ class DetailTourController extends GetxController {
   final GetuserUseCase _getuserUseCase;
 
   late Map<String, dynamic> tourData;
+  final TextEditingController commentText = TextEditingController();
   var numberOfPeople = 1.obs;
   var selectedItem = 0.obs;
   var isFavorite = false.obs;
@@ -22,26 +23,38 @@ class DetailTourController extends GetxController {
   var startTime = ''.obs; // Lưu trữ thời gian bắt đầu
   var endDate = ''.obs;
   var totalPrice = 0.obs; // Lưu trữ ngày về dựa trên NumberOfDay
+  var commentTour = [].obs;
 
   DetailTourController(this._getuserUseCase);
   @override
-  void onInit() {
-    super.onInit();
+  void onInit() async {
     tourData = Get.arguments ?? {};
-
     // Lấy danh sách ảnh và set giá trị hình ảnh hiện tại
     images = List<String>.from(tourData['IMAGES'] ?? []);
     currentImage.value = images.isNotEmpty ? images[0] : '';
-
     // Lấy danh sách ngày từ CALENDAR_TOUR và set ngày được chọn mặc định
     calendarTour = List<dynamic>.from(tourData['CALENDAR_TOUR'] ?? []);
-    if (calendarTour.isNotEmpty) {
-      selectedDate.value = formatDate(calendarTour[0]['START_DATE']).toString();
-      this.calendarTour = calendarTour;
+    final upcomingDates = getUpcomingDates();
+    if (upcomingDates.isNotEmpty) {
+      selectedDate.value = formatDate(upcomingDates[0]['START_DATE']);
     }
-
     totalPrice.value =
         int.parse(tourData['PRICE_PER_PERSON']) * numberOfPeople.value;
+    await loadData();
+
+    super.onInit();
+  }
+
+  String formatCurrency(String price) {
+    final formatter = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+
+    // Sử dụng `double.tryParse` để chuyển chuỗi thành số, trả về 0 nếu chuyển đổi không thành công
+    final doublePrice = double.tryParse(price) ?? 0.0;
+    return formatter.format(doublePrice);
+  }
+
+  Future<void> loadData() async {
+    await fetchComments();
   }
 
   // Cập nhật tổng tiền khi số lượng người thay đổi
@@ -139,6 +152,11 @@ class DetailTourController extends GetxController {
     ); // Cập nhật endDate
   }
 
+  String formatDateToYYYYMMDD(String date) {
+    DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(date);
+    return DateFormat('yyyy-MM-dd').format(parsedDate);
+  }
+
   Future<void> addToCart() async {
     final AuthenticationModel? authModel = await _getuserUseCase.getToken();
 
@@ -154,8 +172,12 @@ class DetailTourController extends GetxController {
 
     final data = {
       "TOUR_ID": tourData['_id'],
-      "START_DATE": selectedDate.value.isNotEmpty ? selectedDate.value : 'N/A',
-      "END_DATE": endDate.value.isNotEmpty ? endDate.value : 'N/A',
+      "START_DATE": selectedDate.value.isNotEmpty
+          ? formatDateToYYYYMMDD(selectedDate.value)
+          : 'N/A',
+      "END_DATE": endDate.value.isNotEmpty
+          ? formatDateToYYYYMMDD(endDate.value)
+          : 'N/A',
       "NUMBER_OF_PEOPLE": numberOfPeople.value,
       "START_TIME": startTime.value.isNotEmpty ? startTime.value : 'N/A',
       "CALENDAR_TOUR_ID": calendarTour[selectedItem.value]['_id'],
@@ -282,6 +304,115 @@ class DetailTourController extends GetxController {
         "CALENDAR_TOUR_ID": CalendarTourID,
       },
     ];
-    Get.toNamed('/info-payment', arguments: data);
+    Get.toNamed(
+      '/info-payment',
+      arguments: data,
+    );
+  }
+
+  List<dynamic> getUpcomingDates() {
+    DateTime today = DateTime.now();
+    return calendarTour.where((tour) {
+      DateTime startDate = DateTime.parse(tour['START_DATE']);
+      return startDate.isAfter(today) || startDate.isAtSameMomentAs(today);
+    }).toList();
+  }
+
+  Future<void> fetchComments() async {
+    final AuthenticationModel? authModel = await _getuserUseCase.getToken();
+
+    if (authModel == null || authModel.metadata.isEmpty) {
+      print("Error: Token is missing");
+      return;
+    }
+    final String token = authModel.metadata;
+
+    final apiService = ApiService("http://10.0.2.2:3000", token);
+    final String endpoint = "/reviews-tour/get-reviews/${tourData['_id']}";
+    final response = await apiService.getDataJSON(endpoint);
+    print(response);
+    if (response['success'] == true && response['data'] != null) {
+      commentTour.value = response['data'];
+      print("commentTour ${commentTour}");
+      update();
+    } else {
+      print("No data found or error in response");
+    }
+  }
+
+  Future<void> submitComment() async {
+    if (commentText.text.isEmpty) {
+      print("Comment text is empty");
+      return;
+    }
+
+    final AuthenticationModel? authModel = await _getuserUseCase.getToken();
+    if (authModel == null || authModel.metadata.isEmpty) {
+      print("Error: Token is missing");
+      return;
+    }
+    final String token = authModel.metadata;
+    print(token);
+    final apiService = ApiService("http://10.0.2.2:3000", token);
+    final String endpoint = "/reviews-tour/create-review";
+    print(tourData['_id']);
+    final data = {
+      "tourId": tourData['_id'],
+      "comment": commentText.text,
+      "rating":
+          5, // Assuming a static rating; add UI to choose rating if needed
+    };
+    print(data);
+    try {
+      final response = await apiService.postData(endpoint, data);
+      if (response['success'] == true) {
+        fetchComments(); // Refresh comments after adding new one
+        Get.snackbar('Success', 'Comment added successfully');
+      } else {
+        print("Error adding comment: ${response['message']}");
+        Get.dialog(
+          AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15), // Làm bo tròn các góc
+            ),
+            title: const Row(
+              children: [
+                Icon(
+                  Icons.warning_amber, // Biểu tượng thông báo
+                  color: Colors.orange, // Màu của biểu tượng
+                ),
+                SizedBox(width: 10), // Khoảng cách giữa icon và title
+                Text(
+                  'Thông báo',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87, // Màu chữ của tiêu đề
+                  ),
+                ),
+              ],
+            ),
+            content: Text(
+              response['message'],
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black54, // Màu chữ của nội dung
+              ),
+            ),
+            actions: [
+              ElevatedButtonWidget(
+                ontap: () {
+                  Navigator.of(Get.overlayContext!).pop();
+                },
+                icon: '',
+                text: 'OK',
+              ),
+            ],
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }

@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reading_app/features/nav/explore/di/explore_binding.dart';
-import 'package:reading_app/features/nav/explore/presentation/controller/explore_controller.dart';
 import 'package:reading_app/features/nav/explore/presentation/page/explore_page.dart';
 import 'package:reading_app/features/nav/home/di/home_binding.dart';
-import 'package:reading_app/features/nav/home/presentation/controller/home_controller.dart';
 import 'package:reading_app/features/nav/home/presentation/page/home_page.dart';
+import 'package:reading_app/features/nav/list_tour/di/list_tour_binding.dart';
+import 'package:reading_app/features/nav/list_tour/presentation/page/list_tour_page.dart';
 import 'package:reading_app/features/nav/profile/di/profile_binding.dart';
-import 'package:reading_app/features/nav/profile/presentation/controller/profile_controller.dart';
 import 'package:reading_app/features/nav/profile/presentation/page/profile_page.dart';
 
 class MainController extends GetxController {
   RxInt currentIndex = 0.obs;
+  final pages = <String>['/home', '/explore', '/list', '/profile'];
 
-  // Các route tương ứng với mỗi tab
-  final pages = <String>['/home', '/explore', '/profile'];
-  @override
-  void onInit() {
-    super.onInit();
-    // Khởi tạo các controller
-    Get.lazyPut(() => ExploreController(Get.find()));
-    Get.lazyPut(() => HomeController(Get.find()));
-    Get.lazyPut(() => ProfileController());
-  }
-
-  // Hàm để tạo route và gắn binding
   Route? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/home':
@@ -41,6 +29,14 @@ class MainController extends GetxController {
           binding: ExploreBinding(),
           transition: Transition.fadeIn,
         );
+      case '/list':
+        print("Navigating to ListTourPage");
+        return GetPageRoute(
+          settings: settings,
+          page: () => const ListTourPage(),
+          binding: ListTourBinding(),
+          transition: Transition.fadeIn,
+        );
       case '/profile':
         return GetPageRoute(
           settings: settings,
@@ -53,13 +49,9 @@ class MainController extends GetxController {
     }
   }
 
-  // Điều hướng giữa các tab trong BottomNavigationBar
   void onChangeItemBottomBar(int index) {
-    if (currentIndex.value == index) return; // Nếu tab không thay đổi
+    if (currentIndex.value == index) return;
     currentIndex.value = index;
-    Get.toNamed(
-      pages[index],
-      id: 10, // Sử dụng khóa nested navigator
-    );
+    Get.offNamed(pages[index], id: 10);
   }
 }

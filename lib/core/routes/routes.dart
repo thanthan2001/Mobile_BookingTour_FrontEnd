@@ -14,4 +14,8 @@ abstract class Routes {
   static const paymentVNPay = "/payment-vnpay";
   static const statusPayment = "/status-payment";
   static const inforPayment = "/info-payment";
+  static const historyBooking = "/history-booking";
+  static const detailBooking = "/detail-booking";
+  static const changePassword = "/change-password";
+  static const chat = "/chat";
 }

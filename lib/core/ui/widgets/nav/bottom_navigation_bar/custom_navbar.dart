@@ -3,72 +3,45 @@ import 'package:get/get.dart';
 import 'package:reading_app/core/configs/app_dimens.dart';
 import 'package:reading_app/core/configs/themes/app_colors.dart';
 import 'package:reading_app/features/main/presentation/controller/main_controller.dart';
-import 'package:reading_app/features/nav/explore/presentation/page/explore_page.dart';
-import 'package:reading_app/features/nav/home/presentation/page/home_page.dart';
-import 'package:reading_app/features/nav/profile/presentation/page/profile_page.dart';
 
+// ignore: must_be_immutable
 class CustomNavbar extends GetView<MainController> {
   final double radiusFull = AppDimens.radiusFull;
   final Color primaryColor = AppColors.primary;
   final Color whiteColor = Colors.white;
-
   const CustomNavbar({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(() {
-        return IndexedStack(
-          index: controller.currentIndex.value,
-          children: [
-            Navigator(
-              onGenerateRoute: (settings) => MaterialPageRoute(
-                builder: (_) => HomePage(),
-              ),
+    return Positioned(
+      bottom: AppDimens.paddingSpace10,
+      left: Get.width * 0.1,
+      right: Get.width * 0.1,
+      child: Container(
+        padding: const EdgeInsets.all(AppDimens.paddingSpace5),
+        decoration: BoxDecoration(
+          color: primaryColor,
+          borderRadius: BorderRadius.circular(radiusFull),
+        ),
+        child: Obx(() {
+          return AnimatedOpacity(
+            opacity: 1.0,
+            duration: const Duration(milliseconds: 300),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildIconButton(Icons.home, 0),
+                _buildIconButton(Icons.search, 1),
+                _buildIconButton(Icons.toc_rounded, 2),
+                _buildIconButton(Icons.person, 3),
+              ],
             ),
-            Navigator(
-              onGenerateRoute: (settings) => MaterialPageRoute(
-                builder: (_) => ExplorePage(),
-              ),
-            ),
-            Navigator(
-              onGenerateRoute: (settings) => MaterialPageRoute(
-                builder: (_) => ProfilePage(),
-              ),
-            ),
-          ],
-        );
-      }),
-      bottomNavigationBar: Obx(() {
-        return BottomNavigationBar(
-          currentIndex: controller.currentIndex.value,
-          onTap: (index) {
-            controller.onChangeItemBottomBar(index); // Thay đổi trang
-          },
-          backgroundColor: primaryColor,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: AppColors.white,
-          items: [
-            BottomNavigationBarItem(
-              icon: _buildIcon(Icons.home, 0),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: _buildIcon(Icons.search, 1),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: _buildIcon(Icons.person, 2),
-              label: 'Profile',
-            ),
-          ],
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
-  // Hàm tùy chỉnh để xây dựng icon cho BottomNavigationBar
-  Widget _buildIcon(IconData icon, int index) {
+  Widget _buildIconButton(IconData icon, int index) {
     bool isActive = controller.currentIndex.value == index;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -76,9 +49,10 @@ class CustomNavbar extends GetView<MainController> {
         color: isActive ? AppColors.white : Colors.transparent,
         borderRadius: BorderRadius.circular(AppDimens.radiusFull),
       ),
-      child: Icon(
-        icon,
-        size: AppDimens.iconsSize30,
+      child: IconButton(
+        onPressed: () => controller.onChangeItemBottomBar(index),
+        icon: Icon(icon),
+        iconSize: isActive ? AppDimens.iconsSize30 : AppDimens.iconsSize30,
         color: isActive ? AppColors.primary : AppColors.white,
       ),
     );

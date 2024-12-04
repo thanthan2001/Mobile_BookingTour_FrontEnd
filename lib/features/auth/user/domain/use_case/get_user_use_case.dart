@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:reading_app/core/configs/const/prefs_constants.dart';
 import 'package:reading_app/core/data/prefs/prefs.dart';
 import 'package:reading_app/core/services/models/authentication_model.dart';
+import 'package:reading_app/core/services/models/infor_model.dart';
 import 'package:reading_app/features/auth/user/model/user_model.dart';
 
 class GetuserUseCase {
@@ -73,6 +74,20 @@ class GetuserUseCase {
       return payloadMap;
     } catch (e) {
       print('Failed to decode access token: $e');
+      return null;
+    }
+  }
+
+  Future<InforModel?> getInfo() async {
+    try {
+      final InforModel? userJson = await _prefs.getTempUser2();
+      if (userJson == null) {
+        return null;
+      }
+      final Map<String, dynamic> userMap = jsonDecode(userJson.toString());
+      return InforModel.fromJson(userMap);
+    } catch (e) {
+      print('Failed to load user info: $e');
       return null;
     }
   }

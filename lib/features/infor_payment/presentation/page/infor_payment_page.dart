@@ -6,6 +6,8 @@ import '../../../../core/configs/themes/app_colors.dart';
 import '../controller/infor_payment_controller.dart';
 
 class InforPaymentPage extends GetView<InforPaymentController> {
+  const InforPaymentPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

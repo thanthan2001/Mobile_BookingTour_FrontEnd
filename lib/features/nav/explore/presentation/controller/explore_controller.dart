@@ -65,13 +65,13 @@ class ExploreController extends GetxController {
 
     if (query.isNotEmpty) {
       final ApiService apiService = ApiService('http://10.0.2.2:3000', token);
-      final String endpoint = "/tours/search";
+      final String endpoint = "/tours/search?query=$query";
 
       try {
         print('Searching for: $query');
-        // Sử dụng hàm postParam để truyền params qua URL
-        final Map<String, dynamic> response =
-            await apiService.postParam(endpoint, {'query': query});
+        final Map<String, dynamic> response = await apiService.getDataJSON(
+          endpoint,
+        );
 
         if (response['success'] == true) {
           searchResults.value = response['data'];

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:reading_app/core/configs/assets/app_images.dart';
 import 'package:reading_app/core/configs/themes/app_colors.dart';
 import 'package:reading_app/core/ui/widgets/button/elevated_button_widget.dart';
+import 'package:reading_app/core/ui/widgets/customs/inputs/input_app_normal.dart';
 import 'package:reading_app/core/ui/widgets/icons/icon_circle.dart';
 import 'package:reading_app/features/detail_tour/presentation/controller/detail_tour_controller.dart';
 import 'package:reading_app/features/detail_tour/presentation/widgets/icon_button.dart';
@@ -90,12 +92,13 @@ class DetailTourPage extends GetView<DetailTourController> {
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              '${controller.tourData['PRICE_PER_PERSON']} VND/Người' ??
-                                  "1111", // Giá tour
+                              controller.formatCurrency(
+                                  controller.tourData['PRICE_PER_PERSON']),
                               style: GoogleFonts.roboto(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primary),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
                             ),
                           ],
                         ),
@@ -153,6 +156,14 @@ class DetailTourPage extends GetView<DetailTourController> {
                             ],
                           );
                         }),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Nơi khởi hành : ${controller.tourData["START_ADDRESS"]} ',
+                          style: GoogleFonts.roboto(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 5),
 
                         Text(
@@ -217,22 +228,70 @@ class DetailTourPage extends GetView<DetailTourController> {
                         ),
                         const SizedBox(height: 5),
 
+                        // Text(
+                        //   'Cọc trước: ${controller.tourData['DEPOSIT_PERCENTAGE'].toString() + '%'}',
+                        //   style: GoogleFonts.roboto(
+                        //     fontSize: 16,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
                         Text(
-                          'Cọc trước: ${controller.tourData['DEPOSIT_PERCENTAGE'].toString() + '%'}',
+                          'Ghi chú:\n${controller.tourData["CUSTOM_ATTRIBUTES"]["NOTE"]?.replaceAll('.', '.\n') ?? "jajaj"}',
                           style: GoogleFonts.roboto(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.normal,
                           ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text("Đánh giá",
+                            style: GoogleFonts.roboto(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ],
+                    ),
+                  ),
+                  // Text(
+                  //   'Comments',
+                  //   style: GoogleFonts.roboto(
+                  //     fontSize: 20,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
+                  SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: controller.commentText,
+                            decoration: const InputDecoration(
+                              hintText: 'Nhập bình luận',
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.send, color: Colors.blue),
+                          onPressed: () async {
+                            await controller.submitComment();
+                            controller.commentText.clear();
+                          },
                         ),
                       ],
                     ),
                   ),
+
+                  _buildCommentsSection(),
                 ],
               ),
             ),
           ),
-
-          const SizedBox(height: 14),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -344,11 +403,12 @@ class DetailTourPage extends GetView<DetailTourController> {
                                           ),
                                         ),
                                         Text(
-                                          '${controller.tourData['PRICE_PER_PERSON']} VND/Người',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: AppColors.primary,
+                                          controller.formatCurrency(controller
+                                              .tourData['PRICE_PER_PERSON']),
+                                          style: GoogleFonts.roboto(
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
+                                            color: AppColors.primary,
                                           ),
                                         ),
                                       ],
@@ -406,7 +466,8 @@ class DetailTourPage extends GetView<DetailTourController> {
                                               controller.updateTourInfo(index);
                                             }
                                           },
-                                          items: controller.calendarTour
+                                          items: controller
+                                              .getUpcomingDates()
                                               .map<DropdownMenuItem<String>>(
                                             (dynamic value) {
                                               String formattedDate =
@@ -416,7 +477,8 @@ class DetailTourPage extends GetView<DetailTourController> {
                                                 value: formattedDate,
                                                 child: Row(
                                                   children: [
-                                                    Icon(Icons.calendar_today,
+                                                    const Icon(
+                                                        Icons.calendar_today,
                                                         color: Colors.blue,
                                                         size: 20),
                                                     const SizedBox(width: 10),
@@ -514,7 +576,8 @@ class DetailTourPage extends GetView<DetailTourController> {
                             ),
                             Obx(() {
                               return Text(
-                                '${controller.totalPrice.value} VND',
+                                controller.formatCurrency(
+                                    controller.totalPrice.value.toString()),
                                 style: const TextStyle(
                                   fontSize: 20,
                                   color: AppColors.primary,
@@ -788,6 +851,55 @@ class DetailTourPage extends GetView<DetailTourController> {
         },
         icon: '',
         text: 'Đặt ngay',
+      ),
+    );
+  }
+
+  Widget _buildCommentsSection() {
+    return Obx(() => Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 0, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              Column(
+                children: controller.commentTour
+                    .where((comment) =>
+                        comment['STATUS'] ==
+                        true) // Lọc comment với STATUS = true
+                    .map((comment) {
+                  return _buildCommentItem(comment);
+                }).toList(),
+              ),
+            ],
+          ),
+        ));
+  }
+
+  Widget _buildCommentItem(Map<String, dynamic> comment) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            comment['USER_ID']['FULLNAME'] ?? 'Anonymous',
+            style: GoogleFonts.roboto(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            comment['COMMENT'] ?? '',
+            style: GoogleFonts.roboto(fontSize: 14, color: Colors.black87),
+          ),
+        ],
       ),
     );
   }

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:reading_app/features/auth/user/domain/use_case/get_user_use_case.dart';
 
@@ -34,7 +37,6 @@ class ApiService {
       String endpoint, Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(endpoint, data: data);
-      print(response);
       return response.data;
     } on DioError catch (e) {
       print('DioError: ${e.message}');
@@ -59,8 +61,6 @@ class ApiService {
   Future<List<dynamic>> getData(String endpoint) async {
     try {
       final response = await _dio.get(endpoint);
-      // print('Response status: ${response.statusCode}');
-      // print('Response data: ${response.data}');
 
       if (response.statusCode == 200) {
         if (response.data is List) {
@@ -147,6 +147,39 @@ class ApiService {
     } on DioError catch (e) {
       print('DioError: ${e.message}');
       throw Exception('Failed to get data from URL: ${e.message}');
+    }
+  }
+
+  // Hàm upload ảnh với token
+  Future<Map<String, dynamic>> uploadPhoto(File imageFile, String token) async {
+    try {
+      String endpoint = "/users/photo";
+
+      FormData formData = FormData.fromMap({
+        "PHOTO": await MultipartFile.fromFile(
+          imageFile.path,
+          filename: imageFile.path.split('/').last,
+        ),
+      });
+
+      final response = await _dio.post(
+        endpoint,
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'data': response.data};
+      } else {
+        return {'success': false, 'error': response.statusMessage};
+      }
+    } on DioError catch (e) {
+      print('DioError: ${e.message}');
+      return {'success': false, 'error': e.message};
     }
   }
 }

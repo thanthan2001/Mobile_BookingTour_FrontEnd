@@ -10,7 +10,11 @@ class VNPayPage extends GetView<VNPayController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter WebView example'),
+        title: const Text('Thanh toán'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Get.back(),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

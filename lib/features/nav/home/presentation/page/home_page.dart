@@ -21,78 +21,78 @@ class HomePage extends GetView<HomeController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Category Section
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Loại hình du lịch",
-                    style: GoogleFonts.poppins(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Xử lý sự kiện khi click vào nút "View all"
-                      print("View all");
-                    },
-                    child: Text(
-                      "Tất cả",
-                      style: GoogleFonts.poppins(
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 8),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text(
+              //       "Loại hình du lịch",
+              //       style: GoogleFonts.poppins(
+              //           fontSize: 18, fontWeight: FontWeight.bold),
+              //     ),
+              //     TextButton(
+              //       onPressed: () {
+              //         // Xử lý sự kiện khi click vào nút "View all"
+              //         print("View all");
+              //       },
+              //       child: Text(
+              //         "Tất cả",
+              //         style: GoogleFonts.poppins(
+              //           textStyle: const TextStyle(
+              //             fontSize: 16,
+              //             fontWeight: FontWeight.w500,
+              //           ),
+              //         ),
+              //       ),
+              //     )
+              //   ],
+              // ),
+              // const SizedBox(height: 8),
               // Danh sách category
-              GetBuilder<HomeController>(
-                builder: (controller) {
-                  return SizedBox(
-                    height: 50,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: controller.categories.length,
-                      itemBuilder: (context, index) {
-                        final isSelected =
-                            controller.selectedCategory.value == index;
-                        return InkWell(
-                          onTap: () {
-                            controller.updateCategory(index);
-                            print(
-                                "Selected Category: ${controller.categories[index]}");
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            margin: const EdgeInsets.only(right: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color:
-                                  isSelected ? Colors.blue : Colors.grey[200],
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              controller.categories[index],
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.black,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
+              // GetBuilder<HomeController>(
+              //   builder: (controller) {
+              //     return SizedBox(
+              //       height: 50,
+              //       child: ListView.builder(
+              //         scrollDirection: Axis.horizontal,
+              //         itemCount: controller.categories.length,
+              //         itemBuilder: (context, index) {
+              //           final isSelected =
+              //               controller.selectedCategory.value == index;
+              //           return InkWell(
+              //             onTap: () {
+              //               controller.updateCategory(index);
+              //               print(
+              //                   "Selected Category: ${controller.categories[index]}");
+              //             },
+              //             child: Container(
+              //               padding: const EdgeInsets.symmetric(horizontal: 16),
+              //               margin: const EdgeInsets.only(right: 8),
+              //               decoration: BoxDecoration(
+              //                 borderRadius: BorderRadius.circular(16),
+              //                 color:
+              //                     isSelected ? Colors.blue : Colors.grey[200],
+              //               ),
+              //               alignment: Alignment.center,
+              //               child: Text(
+              //                 controller.categories[index],
+              //                 style: TextStyle(
+              //                   color: isSelected ? Colors.white : Colors.black,
+              //                 ),
+              //               ),
+              //             ),
+              //           );
+              //         },
+              //       ),
+              //     );
+              //   },
+              // ),
+              // const SizedBox(height: 16),
               // Carousel Section
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Địa điểm phổ biến",
+                    "Các tour mới nhất",
                     style: GoogleFonts.poppins(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),
@@ -101,7 +101,7 @@ class HomePage extends GetView<HomeController> {
                       print("View all destinations");
                     },
                     child: Text(
-                      "Tất cả",
+                      "",
                       style: GoogleFonts.poppins(
                         textStyle: const TextStyle(
                           fontSize: 16,
@@ -116,22 +116,22 @@ class HomePage extends GetView<HomeController> {
               // Carousel slider hiển thị các điểm đến phổ biến
               GetBuilder<HomeController>(
                 builder: (controller) {
-                  if (controller.destinations.isEmpty) {
+                  if (controller.newTours.isEmpty) {
                     return Center(
                       child: Text('Không có địa điểm phổ biến để hiển thị'),
                     );
                   }
                   return CarouselSlider.builder(
-                    itemCount: controller.destinations.length,
+                    itemCount: controller.newTours.length,
                     itemBuilder: (context, index, realIndex) {
-                      final destination = controller.destinations[index];
+                      final destination = controller.newTours[index];
                       return _buildCarouselItem(
                         imageUrl: destination['IMAGES'][0] ??
                             "https://via.placeholder.com/100",
                         title: destination['TOUR_NAME'] ?? "null",
                         location: destination['LOCATION'] ?? "null",
-                        price: destination['PRICE_PER_PERSON'] + " VND/Người" ??
-                            "10000",
+                        price: controller
+                            .formatCurrency(destination['PRICE_PER_PERSON']),
                         tourData: destination ?? {},
                       );
                     },
@@ -147,6 +147,13 @@ class HomePage extends GetView<HomeController> {
                 },
               ),
               const SizedBox(height: 16),
+
+              Text(
+                "Các tour phổ biến",
+                style: GoogleFonts.poppins(
+                    fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+
               // ListView hiển thị các điểm đến từ danh sách
               _buildDestinationList(),
             ],
@@ -164,20 +171,22 @@ class HomePage extends GetView<HomeController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Current Location",
+            "Xin chào!!",
             style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey),
           ),
           Row(
             children: [
               const Icon(Icons.location_on, size: 16, color: Colors.blue),
               const SizedBox(width: 4),
-              Text(
-                "Denpasar, Bali",
-                style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              ),
+              Obx(
+                () => Text(
+                  "${controller.user.value?.displayName ?? "Nhím nhỏ"}",
+                  style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              )
             ],
           ),
         ],
@@ -185,13 +194,18 @@ class HomePage extends GetView<HomeController> {
       actions: [
         IconButton(
             onPressed: () {
+              Get.toNamed('/chat');
+            },
+            icon: Icon(Icons.message_outlined, color: AppColors.primary)),
+        IconButton(
+            onPressed: () {
               Get.toNamed('/cart');
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.shopping_cart_outlined,
               color: AppColors.primary,
             )),
-        Padding(
+        const Padding(
           padding: EdgeInsets.all(8.0),
           child: CircleAvatar(
             backgroundImage: NetworkImage(
@@ -375,7 +389,7 @@ class HomePage extends GetView<HomeController> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: Image.network(
-                  imageUrl ?? "https://via.placeholder.com/100",
+                  imageUrl ?? "https://via.placeholder.com/150",
                   width: 100,
                   height: 100,
                   fit: BoxFit.cover,
@@ -440,7 +454,7 @@ class HomePage extends GetView<HomeController> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    price + " VND/Người" ?? "10000",
+                    controller.formatCurrency(price),
                     style: GoogleFonts.roboto(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,

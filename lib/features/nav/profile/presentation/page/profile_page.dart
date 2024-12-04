@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:reading_app/core/ui/widgets/customs/button/button_normal.dart';
 import 'package:reading_app/features/nav/profile/presentation/controller/profile_controller.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -16,35 +15,88 @@ class ProfilePage extends GetView<ProfileController> {
           'Trang cá nhân',
           style: TextStyle(color: Colors.black, fontSize: 20),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              controller.logout();
+            },
+          ),
+        ],
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          // Avatar và tên người dùng
-          CircleAvatar(
-            radius: 50,
-            backgroundImage: NetworkImage(
-                'https://via.placeholder.com/150'), // Thay bằng ảnh của người dùng
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Juan Lizcano',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          TextButton(
-            onPressed: () {
-              // Thêm sự kiện thay đổi ảnh
-            },
-            child: const Text(
-              'Chỉnh sửa',
-              style: TextStyle(color: Colors.blue),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            // Sử dụng Stack để đè các thành phần lên ảnh bìa
+            Stack(
+              alignment:
+                  Alignment.center, // Canh giữa cho các thành phần bên trong
+              children: [
+                // Ảnh bìa với chiều cao cố định
+                SizedBox(
+                  height:
+                      250, // Tăng chiều cao cho ảnh bìa để có thêm không gian
+                  width: double
+                      .infinity, // Cho phép ảnh bìa lấp đầy theo chiều ngang
+                  child: Image.network(
+                    "https://res.cloudinary.com/dcuvwf9nx/image/upload/v1730701351/BookingTour/Tours/33d0a824fa331f551e400368ac57f87e_hmtcne.jpg",
+                    fit: BoxFit.cover, // Điều chỉnh ảnh cho vừa khít
+                  ),
+                ),
+                // Đặt Avatar, tên và nút chỉnh sửa trong Column nằm trên ảnh bìa
+                Positioned(
+                  top: Get.height *
+                      0.1, // Điều chỉnh vị trí của ảnh đại diện và thông tin
+                  child: Column(
+                    children: [
+                      Obx(
+                        () => CircleAvatar(
+                          radius: 50,
+                          backgroundImage: controller.dataUser['PHOTO_URL'] !=
+                                  null
+                              ? NetworkImage(controller.dataUser['PHOTO_URL'])
+                              : const AssetImage(
+                                      'assets/images/default_avt.jpg')
+                                  as ImageProvider, // Sử dụng ảnh mặc định nếu không có URL
+                        ),
+                      ),
+                      Obx(() {
+                        if (controller.dataUser["FULLNAME"] != null) {
+                          return Text(
+                            "${controller.dataUser['FULLNAME']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          );
+                        } else {
+                          return const Text("No user info available");
+                        }
+                      }),
+                      TextButton(
+                        onPressed: () {
+                          controller.pickAndUploadImage();
+                        },
+                        child: const Text(
+                          'Chỉnh sửa',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 20),
-          // Các tùy chọn của người dùng
-          Expanded(
-            child: ListView(
+
+            const SizedBox(height: 20),
+
+            // Các tùy chọn của người dùng
+            ListView(
+              shrinkWrap: true, // Đảm bảo ListView không chiếm hết không gian
+              physics:
+                  const NeverScrollableScrollPhysics(), // Tắt cuộn cho ListView
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
                 _buildProfileOption(
@@ -52,41 +104,34 @@ class ProfilePage extends GetView<ProfileController> {
                   label: 'Thông tin cá nhân',
                   onTap: () {
                     Get.toNamed('/personal-info');
-                    print("Información personal");
-                    // Điều hướng đến trang thông tin cá nhân
                   },
                 ),
-                _buildProfileOption(
-                  icon: Icons.favorite_outline,
-                  label: 'Danh sách yêu thích',
-                  onTap: () {
-                    // Điều hướng đến trang danh sách thú cưng
-                  },
-                ),
+                // _buildProfileOption(
+                //   icon: Icons.favorite_outline,
+                //   label: 'Danh sách yêu thích',
+                //   onTap: () {
+                //     // Điều hướng đến trang danh sách yêu thích
+                //   },
+                // ),
                 _buildProfileOption(
                   icon: Icons.list,
                   label: 'Lịch sử đặt Tour',
                   onTap: () {
-                    // Điều hướng đến trang danh sách thú cưng
+                    Get.toNamed('/history-booking');
                   },
                 ),
                 _buildProfileOption(
                   icon: Icons.lock_outline,
                   label: 'Thay đổi mật khẩu',
                   onTap: () {
-                    // Điều hướng đến trang đổi mật khẩu
+                    Get.toNamed('/change-password');
                   },
                 ),
                 const SizedBox(height: 20),
-                // Nút đăng xuất
-                ButtonNormal(
-                  textChild: "Đăng xuất",
-                  onTap: controller.logout,
-                ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

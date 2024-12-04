@@ -137,12 +137,15 @@ class LogInController extends GetxController {
         Get.toNamed('/verify-otp', arguments: emailController.text);
         return;
       }
+
+      // THÀNH CÔNGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
       final authentication = AuthenticationModel(
-          metadata: response["metadata"], success: response["success"]);
+          metadata: response["metadata"],
+          success: response["success"],
+          idUser: response["message"]["_id"]);
       _saveUserUseCase.saveToken(authentication);
+
       Get.toNamed('/main');
-      print(response['success']);
-      print(response);
     } catch (e) {
       print('Error: $e');
     }

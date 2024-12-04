@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:reading_app/core/configs/const/prefs_constants.dart';
 import 'package:reading_app/core/data/firebase/model/user_model.dart';
+import 'package:reading_app/core/services/models/infor_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Prefs {
@@ -67,6 +68,17 @@ class Prefs {
     prefs.setString(PrefsConstants.tmpUid, json.encode(value));
   }
 
+  Future setTempUser2(InforModel? value) async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.setString(PrefsConstants.tmpUid, json.encode(value));
+  }
+
+  Future<String?> getString(String key) async {
+    final SharedPreferences prefs = await _prefs;
+    return prefs
+        .getString(key); // Return the raw string stored under the given key
+  }
+
   Future<UserModel?> getTempUser() async {
     final SharedPreferences prefs = await _prefs;
     final tempUserJson = prefs.getString(PrefsConstants.tmpUid);
@@ -74,5 +86,14 @@ class Prefs {
       return null;
     }
     return UserModel.fromJson(json.decode(tempUserJson));
+  }
+
+  Future<InforModel?> getTempUser2() async {
+    final SharedPreferences prefs = await _prefs;
+    final tempUserJson = prefs.getString(PrefsConstants.tmpUid);
+    if (tempUserJson == null || tempUserJson.isEmpty) {
+      return null;
+    }
+    return InforModel.fromJson(json.decode(tempUserJson));
   }
 }

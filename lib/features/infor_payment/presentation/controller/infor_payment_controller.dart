@@ -65,9 +65,7 @@ class InforPaymentController extends GetxController {
       final String token = authModel.metadata;
       final apiService = ApiService("http://10.0.2.2:3000", token);
       final totalPrice = dataPayment
-          .map((e) =>
-              e['TOTAL_PRICE_TOUR'] ??
-              0) // Gán giá trị mặc định là 0 nếu TOTAL_PRICE_TOUR là null
+          .map((e) => e['TOTAL_PRICE_TOUR'] ?? 0)
           .reduce((a, b) => a + b);
       final dataBooking = {
         "toursDetails": ListDataTour, // Thông tin tour

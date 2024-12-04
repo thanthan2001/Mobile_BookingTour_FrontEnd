@@ -2,10 +2,12 @@ import 'dart:convert';
 
 class AuthenticationModel {
   final String metadata;
+  final String idUser;
   final bool success;
 
   AuthenticationModel({
     required this.metadata,
+    required this.idUser,
     required this.success,
   });
 
@@ -13,6 +15,7 @@ class AuthenticationModel {
   factory AuthenticationModel.fromJson(Map<String, dynamic> json) {
     return AuthenticationModel(
       metadata: json['metadata'] as String,
+      idUser: json['idUser'] as String,
       success: json['success'] as bool,
     );
   }
@@ -21,6 +24,7 @@ class AuthenticationModel {
   Map<String, dynamic> toJson() {
     return {
       'metadata': metadata,
+      'idUser': idUser,
       'success': success,
     };
   }

@@ -12,8 +12,16 @@ import 'package:reading_app/features/auth/verify_otp/di/verify_otp_binding.dart'
 import 'package:reading_app/features/auth/verify_otp/presentation/page/verify_page.dart';
 import 'package:reading_app/features/cart/di/cart_binding.dart';
 import 'package:reading_app/features/cart/presentation/page/cart_page.dart';
+import 'package:reading_app/features/change_password/di/change_password_binding.dart';
+import 'package:reading_app/features/change_password/presentation/page/change_password_page.dart';
+import 'package:reading_app/features/chat/di/chat_binding.dart';
+import 'package:reading_app/features/chat/presentation/page/chat_page.dart';
+import 'package:reading_app/features/detail_booking/di/detail_booking_binding.dart';
+import 'package:reading_app/features/detail_booking/presentation/page/detail_booking_page.dart';
 import 'package:reading_app/features/detail_tour/di/detail_tour_binding.dart';
 import 'package:reading_app/features/detail_tour/presentation/page/detail_tour_page.dart';
+import 'package:reading_app/features/history_booking/di/history_booking_binding.dart';
+import 'package:reading_app/features/history_booking/presentation/page/history_booking_page.dart';
 import 'package:reading_app/features/infor_payment/di/infor_payment_binding.dart';
 import 'package:reading_app/features/infor_payment/presentation/page/infor_payment_page.dart';
 import 'package:reading_app/features/main/di/main_binding.dart';
@@ -59,7 +67,7 @@ class Pages {
     ),
     GetPage(
       name: Routes.verifyOTP,
-      page: () => VerifyPage(),
+      page: () => const VerifyPage(),
       binding: VerifyOtpBinding(),
     ),
     GetPage(
@@ -69,33 +77,55 @@ class Pages {
     ),
     GetPage(
       name: Routes.detailTour,
-      page: () => DetailTourPage(),
+      page: () => const DetailTourPage(),
       binding: DetailTourBinding(),
     ),
     GetPage(
       name: Routes.cart,
-      page: () => CartPage(),
+      page: () => const CartPage(),
       binding: CartBinding(),
     ),
     GetPage(
       name: Routes.personalInfor,
-      page: () => PersonalInfoPage(),
+      page: () => const PersonalInfoPage(),
       binding: PersonalInfoBinding(),
     ),
     GetPage(
       name: Routes.paymentVNPay,
-      page: () => VNPayPage(),
+      page: () => const VNPayPage(),
       binding: VNPayBinding(),
     ),
     GetPage(
       name: Routes.statusPayment,
-      page: () => StatusPaymentPage(),
+      page: () => const StatusPaymentPage(),
       binding: StatusPaymentBinding(),
     ),
     GetPage(
       name: Routes.inforPayment,
-      page: () => InforPaymentPage(),
+      page: () => const InforPaymentPage(),
       binding: InforPaymentBinding(),
+    ),
+    GetPage(
+      name: Routes.historyBooking,
+      page: () => const HistoryBookingPage(),
+      binding: HistoryBookingBinding(),
+    ),
+    GetPage(
+      name: Routes.chat,
+      page: () => const ChatPage(),
+      binding: ChatBinding(),
+    ),
+    GetPage(
+      name: Routes.detailBooking,
+      page: () => const DetailBookingPage(),
+      binding: DetailBookingBinding(),
+    ),
+    GetPage(
+      name: Routes.changePassword,
+      page: () => const ChangePasswordPage(),
+      binding: ChangePasswordBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
     ),
   ];
 }
